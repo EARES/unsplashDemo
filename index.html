@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Welcome to Vue</title>
+  <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+  <div id="app">
+    
+    <div>
+      <input style="position: sticky;" type="text" v-model="query"  @keypress.enter="updateQuery">
+      <button type="button"   v-on:click="updateQuery">Search</button>
+    </div>
+  
+  <img v-for="image in images" :key="image" style="width:300px; height: 300px;"  v-bind:src="image.urls.small">
+  </div>
+
+  <script>
+    var CLIENT_ID = "42baf048b2164b20409f6fe5597c0ef2cef5e6209e2f4c6ba548e62ab71f5972";
+function makeQuery(query) {
+  return "https://api.unsplash.com/photos/search/?query=" + query +  "&client_id=" + CLIENT_ID;
+}
+
+function doQuery(self) {
+  window.fetch(makeQuery(self.query))
+  .then(function(res){
+    return res.json();
+  })
+  .then(function(res){
+    self.images = res;
+  }); 
+}
+    
+var application = new Vue({
+  el: "#app",
+  data: {
+  	query: 'landscape',
+  	images: []
+  },
+  ready: function() {
+	  doQuery(this);
+  },
+  methods: {
+    updateQuery: function() {
+    	console.log(this.query);
+		  doQuery(this);
+    }
+  }
+});
+  </script>
+</body>
+</html>
